@@ -22,29 +22,10 @@ helm fetch harbor/harbor --untar
 kubectl create ns harbor
 
 # env
-sed -i '36s/core.harbor.domain/harbor.k-tech.cloud/g' ./harbor/values.yaml
-sed -i '37s/harbor.domain/harbor.k-tech.cloud/g' ./harbor/values.yaml
-sed -i '47s/""/"nginx"/g' ./harbor/values.yaml
-sed -i '127s/core.harbor.domain/harbor.k-tech.cloud/g' ./harbor/values.yaml
+sed -i '36s/core.harbor.domain/harbor.k-tech.cloud/g' ~/harbor/values.yaml
+sed -i '37s/harbor.domain/harbor.k-tech.cloud/g' ~/harbor/values.yaml
+sed -i '47s/""/"nginx"/g' ~/harbor/values.yaml
+sed -i '127s/core.harbor.domain/harbor.k-tech.cloud/g' ~/harbor/values.yaml
 
 # harbor deploy
-helm install harbor -f harbor/values.yaml harbor/. -n harbor
-
-# ssl 인증서
-wget https://harbor.k-tech.cloud/api/v2.0/systeminfo/getcert --no-check-certificate
-mv getcert /etc/docker/ca.crt
-
-cat > /etc/docker/daemon.json <<EOF
-{
-"insecure-registries" : ["harbor.k-tech.cloud", "0.0.0.0"]
-}
-EOF
-
-systemctl restart docker
-
-# harbor login
-cat > my_password.txt <<EOF
-Harbor12345
-EOF
-cat ./my_password.txt | docker login https://harbor.k-tech.cloud --username admin --password-stdin
-
+helm install harbor -f ~/harbor/values.yaml ~/harbor/. -n harbor
